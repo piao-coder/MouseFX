@@ -45,7 +45,8 @@ class EffectLayer(QtWidgets.QWidget):
             self.setWindowFlag(QtCore.Qt.WindowTransparentForInput, True)
         except Exception:
             pass
-        self.setWindowState(QtCore.Qt.WindowFullScreen)
+        # 覆盖整个虚拟桌面（包含所有显示器），避免多屏时偏移
+        self._set_virtual_geometry()
         self.setMouseTracking(True)
         # 初始化粒子与定时器
         self.particles = []
@@ -91,6 +92,8 @@ class EffectLayer(QtWidgets.QWidget):
             logger.debug("EffectLayer.showEvent hwnd=%s", hwnd)
         except Exception:
             pass
+        # 保障在显示时也按虚拟桌面布局
+        self._set_virtual_geometry()
 
     def toggle(self):
         self.visible_effects = not self.visible_effects
@@ -106,10 +109,28 @@ class EffectLayer(QtWidgets.QWidget):
         except Exception:
             pass
         self.timer.setInterval(10)
+        # 屏幕可能变化，刷新覆盖区域
+        self._set_virtual_geometry()
 
     def _global_to_local(self, x: int, y: int) -> QtCore.QPointF:
         pt = self.mapFromGlobal(QtCore.QPoint(int(x), int(y)))
         return QtCore.QPointF(pt)
+
+    def _set_virtual_geometry(self):
+        try:
+            screens = QtGui.QGuiApplication.screens()
+            if not screens:
+                return
+            rect = None
+            for s in screens:
+                r = s.geometry()
+                rect = r if rect is None else rect.united(r)
+            if rect is not None:
+                # 将窗口放到虚拟桌面原点并设置覆盖范围
+                self.setGeometry(rect)
+        except Exception:
+            # 兜底：保留现有几何
+            pass
 
     def spawn(self, x: int, y: int):
         # 性能优化：如果粒子过多，跳过新的特效

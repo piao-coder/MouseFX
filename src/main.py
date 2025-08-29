@@ -27,6 +27,35 @@ def _qt_message_handler(msg_type, context, message):
 
 QtCore.qInstallMessageHandler(_qt_message_handler)
 
+# 在创建 QApplication 之前启用高 DPI 感知，避免坐标在缩放环境下错位
+def _enable_per_monitor_dpi_awareness():
+    try:
+        import ctypes
+        user32 = ctypes.windll.user32
+        # Windows 10+ 优先使用 PMv2
+        try:
+            DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = ctypes.c_void_p(-4)
+            user32.SetProcessDpiAwarenessContext.restype = ctypes.c_bool
+            if user32.SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2):
+                return
+        except Exception:
+            pass
+        # 其次尝试 shcore.SetProcessDpiAwareness
+        try:
+            shcore = ctypes.windll.shcore
+            # 2 = PROCESS_PER_MONITOR_DPI_AWARE
+            shcore.SetProcessDpiAwareness(2)
+            return
+        except Exception:
+            pass
+        # 最后退化为 SetProcessDPIAware（系统级）
+        try:
+            user32.SetProcessDPIAware()
+        except Exception:
+            pass
+    except Exception:
+        pass
+
 # 设置界面
 class SettingsWindow(QtWidgets.QWidget):
     def __init__(self, config, on_save):
@@ -232,7 +261,7 @@ class App(QtWidgets.QApplication):
         menu = QtWidgets.QMenu()
         act_open = menu.addAction("打开设置")
         act_toggle = menu.addAction("切换特效")
-        # 动态壁纸功能已移除，托盘只保留特效和退出
+        
         act_toggle.setCheckable(True)
         act_toggle.setChecked(self.overlay.visible_effects)
         menu.addSeparator()
@@ -361,13 +390,17 @@ class App(QtWidgets.QApplication):
             is_left = (str(button) == 'Button.left')
         if is_left:
             self._left_pressed = True
-            logger.debug("detected left click -> spawning effects at %s,%s", x, y)
-            self.overlay.spawn(int(x), int(y))
+            # 使用 Qt 的全局鼠标位置（逻辑坐标），避免与 pynput 的物理像素产生缩放偏差
+            qpos = QtGui.QCursor.pos()
+            logger.debug("detected left click -> spawning effects at %s,%s (qt=%s,%s)", x, y, qpos.x(), qpos.y())
+            self.overlay.spawn(int(qpos.x()), int(qpos.y()))
 
     def on_move(self, x, y):
         # 左键长按滑动轨迹特效
         if getattr(self, '_left_pressed', False):
-            self.overlay.spawn_trail(int(x), int(y))
+            # 用 Qt 逻辑坐标保证与绘制坐标系一致
+            qpos = QtGui.QCursor.pos()
+            self.overlay.spawn_trail(int(qpos.x()), int(qpos.y()))
 
     def handle_hotkey(self, name: str):
         if name == 'toggleEffects':
@@ -410,5 +443,12 @@ class _NativeEventFilter(QtCore.QAbstractNativeEventFilter):
 
 
 if __name__ == '__main__':
+    # 必须在 QApplication 创建之前设置 DPI 策略与属性
+    try:
+        # 对位图/图标启用高 DPI 资源
+        QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+    except Exception:
+        pass
+    _enable_per_monitor_dpi_awareness()
     app = App(sys.argv)
     sys.exit(app.exec())
