@@ -67,6 +67,12 @@ pyinstaller --noconfirm --onefile --noconsole --icon "ico\\firefox.ico" src/main
 }
 ```
 
+##  版本发布（Release）
+- windows64应用程序：`dist/MouseFX-V1.0-Win64.exe`
+- 随附文件：请将根目录的 `config.json` 与 `ico/` 一并放到可执行文件同目录，用户即可修改配置与替换图标。
+
+
+
 ## 兼容性与限制
 - 需要 Windows 10/11。
 - 部分安全软件可能阻止窗口注入或全局钩子，请将程序加入白名单。

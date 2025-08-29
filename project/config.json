@@ -1,0 +1,60 @@
+{
+  "app": {
+    "name": "MouseFX",
+    "icon": "ico\\firefox.ico",
+    "appUserModelId": "MouseFX.App"
+  },
+  "debug": false,
+  "effects": {
+    "enabled": true,
+    "performanceMode": false,
+    "global": true,
+    "types": [
+      "heart",
+      "star",
+      "ripple",
+      "confetti",
+      "coin"
+    ],
+    "randomPick": true,
+    "density": 3,
+    "duration": 4.0,
+    "colors": [
+      "#FF5252",
+      "#FF4081",
+      "#E040FB",
+      "#7C4DFF",
+      "#536DFE",
+      "#448AFF",
+      "#40C4FF",
+      "#18FFFF",
+      "#64FFDA",
+      "#69F0AE"
+    ],
+    "sizeRange": [
+      14,
+      28
+    ],
+    "speedRange": [
+      150,
+      420
+    ],
+    "trailEnabled": true,
+    "trailDensity": 4,
+    "trailLife": 0.6,
+    "trailMinIntervalMs": 16,
+    "trailSizeRange": [
+      5,
+      10
+    ],
+    "trailFlowerChance": 0.3,
+    "trailFlowerSizeRange": [
+      7,
+      14
+    ]
+  },
+  "hotkeys": {
+    "toggleEffects": "ctrl+alt+h",
+    "quit": "ctrl+alt+q"
+  }
+}
