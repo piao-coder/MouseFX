@@ -1,9 +1,13 @@
-# MouseFX（Windows 鼠标点击特效）
+<img width="587" height="218" alt="image" src="https://github.com/user-attachments/assets/8b046d04-a0ef-4710-b207-d6a93fc4f5fa" /># MouseFX（Windows 鼠标点击特效）
 
 本项目专注于：
 - 全局捕获鼠标左键点击并显示可配置的点击/拖拽特效（爱心、星星、小花、彩纸、钱币等）。
 - 通过 `config.json` 调整特效效果、颜色、数量、持续时间与热键。
 - 支持打包为 Windows EXE。
+  
+## windows系统使用
+下载project文件夹里面的exe，直接运行，可以根据实际效果进行调整部分参数。
+
 
 ## 功能特性
 - 点击特效（可多选并随机）：
@@ -16,6 +20,13 @@
 - 全局热键：
  - `Ctrl+Alt+H` 显示/隐藏特效层，
  - `Ctrl+Alt+Q` 退出。
+ - 
+## 参数设置界面：
+<img width="469" height="627" alt="image" src="https://github.com/user-attachments/assets/399b139c-fff8-455a-bcb8-cf33469b94cc" />
+
+## 界面效果
+<img width="566" height="585" alt="image" src="https://github.com/user-attachments/assets/dd72448f-6754-4b39-91bf-5708f8092dfd" />
+<img width="358" height="297" alt="image" src="https://github.com/user-attachments/assets/804ed87c-d064-48cd-b9c5-50f29bcf8488" />
 
 ## 快速开始（开发）
 
