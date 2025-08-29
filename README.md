@@ -1,4 +1,4 @@
-<img width="587" height="218" alt="image" src="https://github.com/user-attachments/assets/8b046d04-a0ef-4710-b207-d6a93fc4f5fa" /># MouseFX（Windows 鼠标点击特效）
+# MouseFX（Windows 鼠标点击特效）
 
 本项目专注于：
 - 全局捕获鼠标左键点击并显示可配置的点击/拖拽特效（爱心、星星、小花、彩纸、钱币等）。
